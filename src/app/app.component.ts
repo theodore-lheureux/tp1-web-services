@@ -1,11 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { LastFMService } from './services/last-fm.service';
 
 @Component({
@@ -34,11 +28,9 @@ export class AppComponent {
         }
       });
     }
-
   }
 
   private async apiKeyIsValid(): Promise<boolean> {
     return await this.lastFM.validateApiKey(this.apiKey.value!);
   }
-
 }
