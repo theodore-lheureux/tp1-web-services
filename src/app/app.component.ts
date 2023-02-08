@@ -28,9 +28,18 @@ export class AppComponent {
         }
       });
     }
+
+    console.log(this.apiKey);
   }
 
   private async apiKeyIsValid(): Promise<boolean> {
+    await this.lastFM.getAlbumInfo(this.apiKey.value!, 'Cher', 'Believe');
+
+    // fetch an artist
+    console.log(
+      await this.lastFM.getArtistInfo(this.apiKey.value!, 'Pink Floyd')
+    );
+
     return await this.lastFM.validateApiKey(this.apiKey.value!);
   }
 }

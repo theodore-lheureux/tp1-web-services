@@ -7,7 +7,7 @@
         placeholder="API Key" [formControl]="apiKey">
     <button class="m-2 btn bg-[#1e293b] text-secondaryText" (click)="setApiKey(apiKeyInput.value)">Set API Key</button>
 
-    <div *ngIf="apiKey.invalid && (apiKey.dirty)" class="m-4 mt-0 text-red-600">
+    <div *ngIf="apiKey.invalid && (apiKey.dirty || !apiKey.untouched)" class="m-4 mt-0 text-red-600">
         <div *ngIf="apiKey.errors?.['required']">
             API Key is required.
         </div>
