@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { Artist } from './models/artist.class';
 import { LastFMService } from './services/last-fm.service';
 
 @Component({
@@ -10,36 +11,46 @@ import { LastFMService } from './services/last-fm.service';
 export class AppComponent {
   title = 'tp1-web-services';
   keySet = false;
-  apiKey = new FormControl('', [Validators.required, Validators.minLength(4)]);
+  apiKeyControl = new FormControl('', [
+    Validators.required,
+    Validators.minLength(4),
+  ]);
+  artistControl = new FormControl('', [Validators.required]);
+  artist: Artist | undefined;
 
   constructor(private lastFM: LastFMService) {}
 
   setApiKey(key: string): void {
-    this.apiKey.markAsDirty();
-    this.apiKey.setValue(key);
+    this.apiKeyControl.markAsDirty();
+    this.apiKeyControl.setValue(key);
 
-    if (this.apiKey.valid) {
+    if (this.apiKeyControl.valid) {
       this.apiKeyIsValid().then((valid) => {
         if (valid) {
-          this.apiKey.setErrors(null);
+          this.apiKeyControl.setErrors(null);
           this.keySet = true;
         } else {
-          this.apiKey.setErrors({ invalidKey: true });
+          this.apiKeyControl.setErrors({ invalidKey: true });
         }
       });
     }
-
-    console.log(this.apiKey);
   }
 
   private async apiKeyIsValid(): Promise<boolean> {
-    await this.lastFM.getAlbumInfo(this.apiKey.value!, 'Cher', 'Believe');
+    return await this.lastFM.validateApiKey(this.apiKeyControl.value!);
+  }
 
-    // fetch an artist
-    console.log(
-      await this.lastFM.getArtistInfo(this.apiKey.value!, 'Pink Floyd')
-    );
+  async getArtist(artistName: string): Promise<void> {
+    this.artistControl.markAsDirty();
+    this.artistControl.setValue(artistName);
 
-    return await this.lastFM.validateApiKey(this.apiKey.value!);
+    if (this.artistControl.valid) {
+      this.artist = await this.lastFM.getArtistInfo(
+        this.apiKeyControl.value!,
+        this.artistControl.value!
+      );
+    }
+
+    console.log(this.artist);
   }
 }

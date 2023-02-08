@@ -11,13 +11,16 @@ export class LastFMService {
   constructor(private httpClient: HttpClient) {}
 
   async validateApiKey(apiKey: string): Promise<boolean> {
-    let res: any = await lastValueFrom(
-      this.httpClient.get(
-        `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${apiKey}&artist=Cher&album=Believe&format=json`
-      )
-    );
-    console.log(res);
-    return res.error === undefined;
+    try {
+      await lastValueFrom(
+        this.httpClient.get(
+          `http://ws.audioscrobbler.com/2.0/?method=album.search&album=believe&api_key=${apiKey}&format=json`
+        )
+      );
+    } catch (error) {
+      return false;
+    }
+    return true;
   }
 
   async getArtistInfo(apiKey: string, artistName: string): Promise<any> {
@@ -26,39 +29,43 @@ export class LastFMService {
       this.httpClient.get(
         `http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&api_key=${apiKey}&format=json`
       )
-    );
+    ).catch((error) => {
+      return { error: 'Artist not found' };
+    });
+
+    if (reqId.error) return reqId;
+
     let id = reqId.results.artistmatches.artist[0].mbid;
     let res: any = await lastValueFrom(
       this.httpClient.get(
         `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=${id}&api_key=${apiKey}&format=json`
       )
-    );
+    ).catch((error) => {
+      return { error: 'Artist not found' };
+    });
 
-    artist = new Artist(id, res.artist.name, res.artist.bio.summary);
+    artist = new Artist(id, res.artist.name, res.artist.bio.summary, []);
+    artist.albums = await this.getTopAlbums(apiKey, artist);
 
     return artist;
   }
 
-  async getAlbumInfo(
-    apiKey: string,
-    artist: string,
-    albumName: string
-  ): Promise<Album> {
+  async getTopAlbums(apiKey: string, artist: Artist): Promise<Album[]> {
     let res: any = await lastValueFrom(
       this.httpClient.get(
-        `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${apiKey}&artist=${artist}&album=${albumName}&format=json`
+        `http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${artist.id}&api_key=${apiKey}&format=json`
       )
-    );
+    ).catch((error) => {
+      return { error: 'Artist not found' };
+    });
 
-    let album = new Album(
-      res.album.name,
-      res.album.wiki?.summary,
-      res.album.wiki?.published,
-      res.album.image[3]['#text'],
-      res.album.artist
-    );
+    let albums: Album[] = [];
 
-    return album;
+    res.topalbums.album.forEach((album: any) => {
+      albums.push(new Album(album.name, album.image[3]['#text'], artist));
+    });
+
+    return albums;
   }
 
   async getSongs(

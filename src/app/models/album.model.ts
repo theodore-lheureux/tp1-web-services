@@ -1,9 +1,9 @@
+import { Artist } from './artist.class';
+
 export class Album {
   constructor(
-    public name: string,
-    public summary: string,
-    public published: string,
+    public title: string,
     public image: string,
-    public artist: string
+    public artist: Artist
   ) {}
 }
