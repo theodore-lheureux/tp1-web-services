@@ -1,7 +1,7 @@
 <div *ngIf="!keySet">
     <input #apiKeyInput class="m-2 p-2 bg-secondary rounded-md form-control" type="text" id="apiKey"
         placeholder="API Key" [formControl]="apiKeyControl">
-    <button class="m-2 btn bg-[#1e293b] text-secondaryText" (click)="setApiKey(apiKeyInput.value)">Set API Key</button>
+    <button class="m-2 btn bg-secondary text-secondaryText" (click)="setApiKey(apiKeyInput.value)">Set API Key</button>
 
     <div *ngIf="apiKeyControl.invalid && apiKeyControl.dirty" class="m-4 mt-0 text-red-600">
         <div *ngIf="apiKeyControl.errors?.['required']">
@@ -16,10 +16,12 @@
     </div>
 </div>
 
+<app-searchbar></app-searchbar>
+
 <div *ngIf="!artist && keySet">
     <input #artistInput type="text" id="artist" placeholder="Artist"
-        class="m-2 p-2 bg-secondary rounded-md form-control" [formControl]="artistControl">
-    <button class="m-2 btn bg-[#1e293b] text-secondaryText" (click)="getArtist(artistInput.value)">Get Artist</button>
+        class="m-2 p-2 bg-secondary rounded-md form-control text-secondaryText" [formControl]="artistControl">
+    <button class="m-2 btn bg-secondary text-secondaryText" (click)="getArtist(artistInput.value)">Get Artist</button>
     <div *ngIf="artistControl.invalid && artistControl.dirty" class="m-4 mt-0 text-red-600">
         <div *ngIf="artistControl.errors?.['required']">
             Artist is required.
@@ -31,7 +33,7 @@
 </div>
 
 <div *ngIf="artist">
-    <button class="m-2 btn bg-[#1e293b] text-secondaryText" (click)="resetArtist()">Change Artist</button>
+    <button class="m-2 btn bg-secondary text-secondaryText" (click)="resetArtist()">Change Artist</button>
     <div *ngFor="let album of artist.albums" class="m-2 p-2 bg-secondary rounded-md">
         <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
     </div>
