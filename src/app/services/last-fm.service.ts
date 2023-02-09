@@ -54,14 +54,32 @@ export class LastFMService {
       this.httpClient.get(
         `http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${artist.id}&api_key=${apiKey}&format=json`
       )
-    ).catch((error) => {
-      return { error: 'Artist not found' };
-    });
+    );
 
     let albums: Album[] = [];
 
     res.topalbums.album.forEach((album: any) => {
-      albums.push(new Album(album.name, album.image[3]['#text'], artist));
+      if (
+        !(
+          album.image[3]['#text'] === '' ||
+          album.name === '' ||
+          album.name.toLowerCase().includes('remaster') ||
+          album.name.toLowerCase().includes('live') ||
+          album.name.toLowerCase().includes('deluxe') ||
+          album.name.toLowerCase().includes('edition') ||
+          album.name.toLowerCase().includes('bonus') ||
+          album.name.toLowerCase().includes('disc') ||
+          album.name.toLowerCase().includes('version') ||
+          album.name.toLowerCase().includes('single') ||
+          album.name.toLowerCase().includes('very best of') ||
+          album.name
+            .toLowerCase()
+            .includes('best of ' + artist.name.toLowerCase()) ||
+          album.name.toLowerCase().includes('anthology') ||
+          album.name == '(null)'
+        )
+      )
+        albums.push(new Album(album.name, album.image[3]['#text'], artist));
     });
 
     return albums;
@@ -72,9 +90,7 @@ export class LastFMService {
       this.httpClient.get(
         `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${apiKey}&artist=${album.artist.name}&album=${album.title}&format=json`
       )
-    ).catch((error) => {
-      return { error: 'Album not found' };
-    });
+    );
 
     let songs = res.album.tracks.track.map((song: any) => {
       return new Song(song.name, song.duration);
