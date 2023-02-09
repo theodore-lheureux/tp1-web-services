@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<app-searchbar></app-searchbar>
+<app-searchbar [apiKey]="apiKeyControl.value!"></app-searchbar>
 
 <div *ngIf="!artist && keySet">
     <input #artistInput type="text" id="artist" placeholder="Artist"

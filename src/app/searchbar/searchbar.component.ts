@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { LastFMService } from '../services/last-fm.service';
+import { Artist } from '../models/artist.class';
 
 @Component({
   selector: 'app-searchbar',
@@ -8,4 +10,24 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 })
 export class SearchbarComponent {
   faMagnifyingGlass = faMagnifyingGlass;
+  @Input() apiKey: string = '';
+  searchValue = '';
+  artists: Artist[] = [];
+
+  constructor(private lastFM: LastFMService) {}
+
+  async search() {
+    if (this.searchValue.length > 2) {
+      try {
+        this.artists = await this.lastFM.searchArtist(
+          this.apiKey,
+          this.searchValue
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  async submit() {}
 }

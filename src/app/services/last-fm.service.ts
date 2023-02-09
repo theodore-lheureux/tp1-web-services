@@ -24,6 +24,28 @@ export class LastFMService {
     return true;
   }
 
+  async searchArtist(apiKey: string, artistName: string): Promise<Artist[]> {
+    let artists: Artist[] = [];
+    let res: any = await lastValueFrom(
+      this.httpClient.get(
+        `http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&api_key=${apiKey}&format=json`
+      )
+    );
+
+    res.results.artistmatches.artist.forEach(async (artist: any) => {
+      artists.push(
+        new Artist(
+          artist.mbid,
+          artist.name,
+          '',
+          await this.fetchArtistImage(artist.mbid)
+        )
+      );
+    });
+
+    return artists;
+  }
+
   async getArtistInfo(apiKey: string, artistName: string): Promise<Artist> {
     let artist: Artist;
     let reqId: any = await lastValueFrom(
@@ -43,7 +65,12 @@ export class LastFMService {
       )
     );
 
-    artist = new Artist(id, res.artist.name, res.artist.bio.summary);
+    artist = new Artist(
+      id,
+      res.artist.name,
+      res.artist.bio.summary,
+      await this.fetchArtistImage(id)
+    );
     artist.albums = await this.getTopAlbums(apiKey, artist);
 
     return artist;
@@ -97,5 +124,20 @@ export class LastFMService {
     });
 
     return songs;
+  }
+
+  private async fetchArtistImage(artistMID: string): Promise<string> {
+    let res: any = await lastValueFrom(
+      this.httpClient.get(
+        `https://musicbrainz.org/ws/2/artist/${artistMID}?inc=url-rels&fmt=json`
+      )
+    );
+
+    for (let i = 0; i < res.relations.length; i++) {
+      if (res.relations[i].type === 'image') {
+        return res.relations[i].url.resource;
+      }
+    }
+    return '';
   }
 }
