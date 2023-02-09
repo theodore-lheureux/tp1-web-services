@@ -24,26 +24,24 @@ export class LastFMService {
     return true;
   }
 
-  async getArtistInfo(apiKey: string, artistName: string): Promise<any> {
+  async getArtistInfo(apiKey: string, artistName: string): Promise<Artist> {
     let artist: Artist;
     let reqId: any = await lastValueFrom(
       this.httpClient.get(
         `http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&api_key=${apiKey}&format=json`
       )
-    ).catch((error) => {
-      return { error: 'Artist not found' };
-    });
+    );
 
-    if (reqId.error) return reqId;
+    if (reqId.results.artistmatches.artist.length === 0) {
+      throw new Error('Artist not found');
+    }
 
     let id = reqId.results.artistmatches.artist[0].mbid;
     let res: any = await lastValueFrom(
       this.httpClient.get(
         `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=${id}&api_key=${apiKey}&format=json`
       )
-    ).catch((error) => {
-      return { error: 'Artist not found' };
-    });
+    );
 
     artist = new Artist(id, res.artist.name, res.artist.bio.summary);
     artist.albums = await this.getTopAlbums(apiKey, artist);

@@ -73,6 +73,10 @@ export class AppComponent implements OnInit {
         .then((artist) => {
           window.localStorage.setItem('artistName', this.artistControl.value!);
           return artist;
+        })
+        .catch((error) => {
+          this.artistControl.setErrors({ invalidArtist: true });
+          return undefined;
         });
     }
   }

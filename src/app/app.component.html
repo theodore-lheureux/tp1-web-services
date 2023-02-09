@@ -24,6 +24,9 @@
         <div *ngIf="artistControl.errors?.['required']">
             Artist is required.
         </div>
+        <div *ngIf="artistControl.errors?.['invalidArtist']">
+            Artist is invalid.
+        </div>
     </div>
 </div>
 
