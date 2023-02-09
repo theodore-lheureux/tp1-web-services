@@ -28,10 +28,8 @@
 </ng-container>
 
 <div *ngIf="artist">
+    <button class="m-2 btn bg-[#1e293b] text-secondaryText" (click)="resetArtist()">Change Artist</button>
     <div *ngFor="let album of artist.albums" class="m-2 p-2 bg-secondary rounded-md">
-        <img [src]="album.image" width="100px" class="m-2 rounded-md inline">
-        <p class="m-2 inline text-secondaryText text-3xl">
-            {{album.title}}
-        </p>
+        <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
     </div>
 </div>

@@ -51,8 +51,9 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private async apiKeyIsValid(): Promise<boolean> {
-    return await this.lastFM.validateApiKey(this.apiKeyControl.value!);
+  resetArtist(): void {
+    this.artist = undefined;
+    this.artistControl.reset();
   }
 
   async getArtist(artistName: string): Promise<void> {

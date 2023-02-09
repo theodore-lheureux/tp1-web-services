@@ -1,1 +1,11 @@
-<p>album works!</p>
+<div (click)="toggleSongs()">
+    <img [src]="album?.image" width="100px" class="m-2 rounded-md inline">
+    <p class="m-2 inline text-secondaryText text-3xl">
+        {{album?.title}}
+    </p>
+</div>
+<div *ngIf="album?.displaySongs">
+    <p *ngFor="let song of album?.songs" class="m-2 text-secondaryText">
+        {{song}}
+    </p>
+</div>
