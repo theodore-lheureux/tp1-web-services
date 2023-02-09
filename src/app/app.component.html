@@ -1,4 +1,4 @@
-<ng-container *ngIf="!keySet">
+<div *ngIf="!keySet">
     <input #apiKeyInput class="m-2 p-2 bg-secondary rounded-md form-control" type="text" id="apiKey"
         placeholder="API Key" [formControl]="apiKeyControl">
     <button class="m-2 btn bg-[#1e293b] text-secondaryText" (click)="setApiKey(apiKeyInput.value)">Set API Key</button>
@@ -14,9 +14,9 @@
             API Key is invalid.
         </div>
     </div>
-</ng-container>
+</div>
 
-<ng-container *ngIf="!artist && keySet">
+<div *ngIf="!artist && keySet">
     <input #artistInput type="text" id="artist" placeholder="Artist"
         class="m-2 p-2 bg-secondary rounded-md form-control" [formControl]="artistControl">
     <button class="m-2 btn bg-[#1e293b] text-secondaryText" (click)="getArtist(artistInput.value)">Get Artist</button>
@@ -25,7 +25,7 @@
             Artist is required.
         </div>
     </div>
-</ng-container>
+</div>
 
 <div *ngIf="artist">
     <button class="m-2 btn bg-[#1e293b] text-secondaryText" (click)="resetArtist()">Change Artist</button>

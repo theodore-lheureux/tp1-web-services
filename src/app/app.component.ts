@@ -21,14 +21,20 @@ export class AppComponent implements OnInit {
   constructor(private lastFM: LastFMService) {}
 
   ngOnInit(): void {
-    let tmp = window.localStorage.getItem('apiKey');
-    if (tmp) {
-      this.lastFM.validateApiKey(tmp).then((valid) => {
+    let localKey = window.localStorage.getItem('apiKey');
+    let localArtistName = window.localStorage.getItem('artistName');
+    if (localKey) {
+      this.lastFM.validateApiKey(localKey).then((valid) => {
         if (valid) {
           this.keySet = true;
-          this.apiKeyControl.setValue(tmp);
+          this.apiKeyControl.setValue(localKey);
         } else {
           window.localStorage.removeItem('apiKey');
+        }
+        if (localArtistName && this.keySet) {
+          this.getArtist(localArtistName).catch((error) => {
+            console.log(error);
+          });
         }
       });
     }
@@ -54,6 +60,7 @@ export class AppComponent implements OnInit {
   resetArtist(): void {
     this.artist = undefined;
     this.artistControl.reset();
+    window.localStorage.removeItem('artistName');
   }
 
   async getArtist(artistName: string): Promise<void> {
@@ -61,13 +68,13 @@ export class AppComponent implements OnInit {
     this.artistControl.setValue(artistName);
 
     if (this.artistControl.valid) {
-      this.artist = await this.lastFM.getArtistInfo(
-        this.apiKeyControl.value!,
-        this.artistControl.value!
-      );
+      this.artist = await this.lastFM
+        .getArtistInfo(this.apiKeyControl.value!, this.artistControl.value!)
+        .then((artist) => {
+          window.localStorage.setItem('artistName', this.artistControl.value!);
+          return artist;
+        });
     }
-
-    console.log(this.artist);
   }
 
   private async apiKeyIsValid(): Promise<boolean> {
