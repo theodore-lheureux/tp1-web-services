@@ -15,13 +15,11 @@ export class AlbumComponent {
   constructor(private lastFM: LastFMService) {}
 
   async getAlbumSongs(album: Album): Promise<void> {
-    if (album.songs.length === 0) {
-      album.songs = await this.lastFM.getAlbumSongs(this.apiKey, album);
-    }
+    album.songs = await this.lastFM.getAlbumSongs(this.apiKey, album);
   }
 
   toggleSongs(): void {
-    if (this.album.songs.length > 0) {
+    if (this.album.songs) {
       this.album.displaySongs = !this.album.displaySongs;
     } else {
       this.getAlbumSongs(this.album).then(() => {

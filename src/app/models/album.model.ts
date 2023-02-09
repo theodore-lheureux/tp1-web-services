@@ -2,7 +2,7 @@ import { Artist } from './artist.class';
 import { Song } from './song.class';
 
 export class Album {
-  songs: Song[] = [];
+  songs: Song[] | undefined;
   displaySongs: boolean = false;
 
   constructor(

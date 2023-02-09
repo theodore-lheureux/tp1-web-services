@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import { Album } from '../models/album.model';
 import { Artist } from '../models/artist.class';
+import { Song } from '../models/song.class';
 
 @Injectable({
   providedIn: 'root',
@@ -68,15 +69,19 @@ export class LastFMService {
     return albums;
   }
 
-  async getAlbumSongs(apiKey: string, album: Album): Promise<any> {
+  async getAlbumSongs(apiKey: string, album: Album): Promise<Song[]> {
     let res: any = await lastValueFrom(
       this.httpClient.get(
         `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${apiKey}&artist=${album.artist.name}&album=${album.title}&format=json`
       )
     ).catch((error) => {
-      return { error: 'Artist not found' };
+      return { error: 'Album not found' };
     });
 
-    return res.album.tracks.track;
+    let songs = res.album.tracks.track.map((song: any) => {
+      return new Song(song.name, song.duration);
+    });
+
+    return songs;
   }
 }
