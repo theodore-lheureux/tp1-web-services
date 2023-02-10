@@ -9,7 +9,7 @@ import { LastFMService } from '../services/last-fm.service';
   styleUrls: ['./album.component.scss'],
 })
 export class AlbumComponent {
-  @Input() album: Album = new Album('', '', new Artist('', '', '', ''));
+  @Input() album: Album = new Album('', '', new Artist('', '', '', '', 1));
   @Input() apiKey: string = '';
 
   constructor(private lastFM: LastFMService) {}

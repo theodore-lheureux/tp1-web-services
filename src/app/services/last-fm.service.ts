@@ -33,13 +33,14 @@ export class LastFMService {
     );
 
     res.results.artistmatches.artist.forEach(async (artist: any) => {
+      if (artist.mbid === '') return;
+
+      let image = await this.fetchArtistImage(artist.mbid, apiKey);
+
+      if (image === '') return;
+
       artists.push(
-        new Artist(
-          artist.mbid,
-          artist.name,
-          '',
-          await this.fetchArtistImage(artist.mbid, apiKey)
-        )
+        new Artist(artist.mbid, artist.name, '', image, artist.listeners)
       );
     });
 
@@ -69,7 +70,8 @@ export class LastFMService {
       id,
       res.artist.name,
       res.artist.bio.summary,
-      await this.fetchArtistImage(id, apiKey)
+      await this.fetchArtistImage(id, apiKey),
+      res.artist.listeners
     );
     artist.albums = await this.getTopAlbums(apiKey, artist);
 
@@ -127,7 +129,6 @@ export class LastFMService {
   }
 
   private async fetchArtistImage(id: string, apiKey: string): Promise<string> {
-    // return the artist's top album image
     let res: any = await lastValueFrom(
       this.httpClient.get(
         `http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${id}&api_key=${apiKey}&limit=1&format=json`

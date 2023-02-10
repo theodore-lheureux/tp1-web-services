@@ -28,6 +28,8 @@ export class SearchbarComponent {
         console.error(error);
       }
     }
+    // sort by listeners
+    this.artists = this.artists.sort((a, b) => b.listeners - a.listeners);
   }
 
   sendToLastFM() {

@@ -7,6 +7,7 @@ export class Artist {
     public id: string,
     public name: string,
     public desc: string,
-    public image: string
+    public image: string,
+    public listeners: number
   ) {}
 }
