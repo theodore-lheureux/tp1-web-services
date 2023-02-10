@@ -2,6 +2,7 @@ import { Album } from './album.model';
 
 export class Artist {
   albums: Album[] = [];
+  selected = false;
 
   constructor(
     public id: string,

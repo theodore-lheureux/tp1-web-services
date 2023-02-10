@@ -17,8 +17,10 @@
             </div>
             <div *ngIf="artists.length > 0"
                 class="min-h-[96px] max-h-[400px] w-full overflow-y-scroll flex-shrink pr-2 pl-2 flex flex-col border-t-gray-500">
-                <div *ngFor="let artist of artists"
-                    class="flex align-middle rounded-md bg-tertiary p-4 mb-2 first:mt-2">
+                <div *ngFor="let artist of artists" (mouseenter)="selectArtist(artist)"
+                    (click)="selectArtist(artist); submit();"
+                    [ngClass]="artist.selected ? 'bg-slate-500 selectedArtist' : 'bg-tertiary'"
+                    class="flex align-middle rounded-md p-4 mb-2 first:mt-2 select-none cursor-pointer">
                     <img class="h-12 w-12 rounded-md" [src]="artist.image" />
                     <div class="flex flex-col justify-center ml-4">
                         <div class="text-secondaryText text-lg">{{artist.name}}</div>

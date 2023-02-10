@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  HostListener,
+  AfterViewChecked,
+} from '@angular/core';
 import {
   faCircleXmark,
   faMagnifyingGlass,
@@ -11,7 +18,7 @@ import { Artist } from '../models/artist.class';
   templateUrl: './searchbar.component.html',
   styleUrls: ['./searchbar.component.scss'],
 })
-export class SearchbarComponent {
+export class SearchbarComponent implements AfterViewChecked {
   faMagnifyingGlass = faMagnifyingGlass;
   faCircleXmark = faCircleXmark;
   @Input() apiKey: string = '';
@@ -22,20 +29,22 @@ export class SearchbarComponent {
 
   constructor(private lastFM: LastFMService) {}
 
-  async search() {
-    this.artists = [];
+  ngAfterViewChecked(): void {
+    this.scrollToSelected();
+  }
+
+  search() {
     if (this.searchValue.length > 2) {
-      try {
-        this.artists = await this.lastFM.searchArtist(
-          this.apiKey,
-          this.searchValue
-        );
-      } catch (error) {
-        console.error(error);
-      }
+      this.lastFM
+        .searchArtist(this.apiKey, this.searchValue)
+        .then((artists) => {
+          this.artists = artists;
+          // this.artists[0].selected = true;
+          // this.selectIndex(0);
+        });
+      return;
     }
-    // sort by listeners
-    this.artists = this.artists.sort((a, b) => b.listeners - a.listeners);
+    this.artists = [];
   }
 
   sendToLastFM() {
@@ -62,5 +71,83 @@ export class SearchbarComponent {
 
   addArtist(artist: Artist | undefined) {
     this.closeEvent.emit(artist);
+  }
+
+  selectIndex(index: number) {
+    console.log(index);
+    this.selectedIndex = index;
+    this.artists.forEach((artist) => (artist.selected = false));
+    this.artists[index].selected = true;
+  }
+
+  scrollToSelected() {
+    let selected = document.querySelector('.selectedArtist');
+    if (selected) {
+      selected.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      });
+    }
+  }
+
+  selectArtist(artist: Artist) {
+    this.selectedIndex = this.artists.indexOf(artist);
+    console.log(this.selectedIndex);
+    this.selectIndex(this.selectedIndex);
+  }
+
+  selectFirstOrNone() {
+    console.log(this.artists);
+    console.log(this.artists.length);
+    if (this.artists.length > 0) {
+      this.selectIndex(0);
+    } else {
+      this.selectedIndex = -1;
+    }
+  }
+
+  selectPrevious() {
+    if (this.selectedIndex > 0) {
+      this.selectedIndex--;
+      this.selectIndex(this.selectedIndex);
+    }
+  }
+
+  selectNext() {
+    if (this.selectedIndex < this.artists.length - 1) {
+      this.selectedIndex++;
+      this.selectIndex(this.selectedIndex);
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (this.selectedIndex > 0) {
+        this.selectPrevious();
+      }
+    } else if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      if (this.selectedIndex < this.artists.length - 1) {
+        this.selectNext();
+      }
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      this.submit();
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeSearch();
+    } else if (event.key === 'Tab') {
+      event.preventDefault();
+      if (event.shiftKey) {
+        this.selectPrevious();
+      } else {
+        this.selectNext();
+      }
+    } else if (event.key === 'Backspace') {
+      console.log(this.selectedIndex);
+    }
   }
 }
