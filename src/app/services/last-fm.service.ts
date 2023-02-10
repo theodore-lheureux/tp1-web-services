@@ -32,19 +32,14 @@ export class LastFMService {
       )
     );
 
-    res.results.artistmatches.artist.forEach(async (artist: any) => {
+    res.results.artistmatches.artist.forEach((artist: any) => {
       if (artist.mbid === '') return;
-
-      let image = await this.fetchArtistImage(artist.mbid, apiKey);
-
-      if (image === '') return;
-
       artists.push(
-        new Artist(artist.mbid, artist.name, '', image, artist.listeners)
+        new Artist(artist.mbid, artist.name, '', '', artist.listeners)
       );
     });
 
-    return artists;
+    return await this.fetchArtistImages(artists, apiKey);
   }
 
   async getArtistInfo(apiKey: string, artistName: string): Promise<Artist> {
@@ -136,5 +131,27 @@ export class LastFMService {
     );
 
     return res.topalbums.album[0].image[3]['#text'];
+  }
+
+  private async fetchArtistImages(
+    artists: Artist[],
+    apiKey: string
+  ): Promise<Artist[]> {
+    let promises: Promise<Artist>[] = [];
+
+    for (let artist of artists) {
+      promises.push(
+        new Promise<Artist>(async (resolve, reject) => {
+          try {
+            artist.image = await this.fetchArtistImage(artist.id, apiKey);
+            resolve(artist);
+          } catch (error) {
+            reject(error);
+          }
+        })
+      );
+    }
+
+    return await Promise.all(promises);
   }
 }

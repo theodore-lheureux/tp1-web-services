@@ -40,15 +40,18 @@ export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
     this.searchInputElement.first.nativeElement.focus();
   }
 
-  search() {
+  async search() {
     if (this.searchValue.length > 2) {
-      this.lastFM
-        .searchArtist(this.apiKey, this.searchValue)
-        .then((artists) => {
-          this.artists = artists;
-          // this.artists[0].selected = true;
-          // this.selectIndex(0);
-        });
+      this.artists = await this.lastFM.searchArtist(
+        this.apiKey,
+        this.searchValue
+      );
+
+      this.artists = this.artists.sort((a, b) => {
+        return b.listeners - a.listeners;
+      });
+
+      this.selectFirstOrNone();
       return;
     }
     this.artists = [];
@@ -80,13 +83,6 @@ export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
     this.closeEvent.emit(artist);
   }
 
-  selectIndex(index: number) {
-    console.log(index);
-    this.selectedIndex = index;
-    this.artists.forEach((artist) => (artist.selected = false));
-    this.artists[index].selected = true;
-  }
-
   scrollToSelected() {
     let selected = document.querySelector('.selectedArtist');
     if (selected) {
@@ -98,17 +94,28 @@ export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
     }
   }
 
+  selectIndex(index: number) {
+    this.selectedIndex = index;
+    this.artists.forEach((artist) => (artist.selected = false));
+    this.artists[index].selected = true;
+  }
+
   selectArtist(artist: Artist) {
     this.selectedIndex = this.artists.indexOf(artist);
-    console.log(this.selectedIndex);
     this.selectIndex(this.selectedIndex);
   }
 
   selectFirstOrNone() {
-    console.log(this.artists);
-    console.log(this.artists.length);
     if (this.artists.length > 0) {
       this.selectIndex(0);
+    } else {
+      this.selectedIndex = -1;
+    }
+  }
+
+  selectLastOrNone() {
+    if (this.artists.length > 0) {
+      this.selectIndex(this.artists.length - 1);
     } else {
       this.selectedIndex = -1;
     }
@@ -118,6 +125,8 @@ export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
     if (this.selectedIndex > 0) {
       this.selectedIndex--;
       this.selectIndex(this.selectedIndex);
+    } else {
+      this.selectLastOrNone();
     }
   }
 
@@ -125,6 +134,8 @@ export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
     if (this.selectedIndex < this.artists.length - 1) {
       this.selectedIndex++;
       this.selectIndex(this.selectedIndex);
+    } else {
+      this.selectFirstOrNone();
     }
   }
 
@@ -132,14 +143,10 @@ export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'ArrowUp') {
       event.preventDefault();
-      if (this.selectedIndex > 0) {
-        this.selectPrevious();
-      }
+      this.selectPrevious();
     } else if (event.key === 'ArrowDown') {
       event.preventDefault();
-      if (this.selectedIndex < this.artists.length - 1) {
-        this.selectNext();
-      }
+      this.selectNext();
     } else if (event.key === 'Enter') {
       event.preventDefault();
       this.submit();
@@ -153,8 +160,6 @@ export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
       } else {
         this.selectNext();
       }
-    } else if (event.key === 'Backspace') {
-      console.log(this.selectedIndex);
     }
   }
 }
