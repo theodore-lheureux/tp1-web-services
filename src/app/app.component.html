@@ -16,20 +16,12 @@
     </div>
 </div>
 
-<app-searchbar *ngIf="!artist && keySet" [apiKey]="apiKeyControl.value!"></app-searchbar>
+<app-searchbar *ngIf="searchbarVisible" [apiKey]="apiKeyControl.value!"
+    (closeEvent)="closeSearch($event)"></app-searchbar>
 
 <div *ngIf="!artist && keySet">
-    <input #artistInput type="text" id="artist" placeholder="Artist"
-        class="m-2 p-2 bg-secondary rounded-md form-control text-secondaryText" [formControl]="artistControl">
-    <button class="m-2 btn bg-secondary text-secondaryText" (click)="getArtist(artistInput.value)">Get Artist</button>
-    <div *ngIf="artistControl.invalid && artistControl.dirty" class="m-4 mt-0 text-red-600">
-        <div *ngIf="artistControl.errors?.['required']">
-            Artist is required.
-        </div>
-        <div *ngIf="artistControl.errors?.['invalidArtist']">
-            Artist is invalid.
-        </div>
-    </div>
+    <input (click)="openSearch()" type="text" id="artist" placeholder="Search for Artist"
+        class="m-2 p-2 bg-secondary rounded-md form-control text-secondaryText">
 </div>
 
 <div *ngIf="artist">

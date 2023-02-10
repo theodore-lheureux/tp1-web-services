@@ -1,5 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  faCircleXmark,
+  faMagnifyingGlass,
+} from '@fortawesome/free-solid-svg-icons';
 import { LastFMService } from '../services/last-fm.service';
 import { Artist } from '../models/artist.class';
 
@@ -10,8 +13,11 @@ import { Artist } from '../models/artist.class';
 })
 export class SearchbarComponent {
   faMagnifyingGlass = faMagnifyingGlass;
+  faCircleXmark = faCircleXmark;
   @Input() apiKey: string = '';
+  @Output() closeEvent = new EventEmitter<Artist | undefined>();
   searchValue = 'sup';
+  selectedIndex = -1;
   artists: Artist[] = [];
 
   constructor(private lastFM: LastFMService) {}
@@ -36,5 +42,25 @@ export class SearchbarComponent {
     window.open(`https://www.last.fm/`, '_blank');
   }
 
-  async submit() {}
+  async submit() {
+    if (this.selectedIndex === -1) {
+      this.addArtist(undefined);
+    } else {
+      this.addArtist(this.artists[this.selectedIndex]);
+    }
+  }
+
+  closeSearch() {
+    this.addArtist(undefined);
+  }
+
+  bgClick(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.closeSearch();
+    }
+  }
+
+  addArtist(artist: Artist | undefined) {
+    this.closeEvent.emit(artist);
+  }
 }

@@ -1,7 +1,8 @@
-<div class="min-h-full min-w-full absolute px-0 py-0 backdrop-blur-sm backdrop-brightness-80">
-    <div class="flex min-h-max min-w-max justify-center">
+<div class="h-full w-full absolute flex justify-center backdrop-blur-sm backdrop-brightness-80"
+    (click)="bgClick($event)">
+    <div class="h-fit w-fit mt-[8vh]">
         <div
-            class="w-[90vw] max-w-[758px] min-h-[261px] max-h-[60%] flex flex-col shadow-inner shadow-[#ffffff12] bg-secondary mt-[8%] rounded-md">
+            class="w-[90vw] max-w-[758px] min-h-[205px] max-h-[60vh] flex flex-col shadow-inner shadow-[#ffffff12] bg-secondary rounded-md">
             <div class="text-secondaryText flex-initial flex p-4  border-b-gray-500 border-b-[1px]">
                 <label for="text" class="">
                     <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
@@ -9,12 +10,13 @@
                 <input type="text" id="text" class="bg-secondary flex-grow focus:outline-none ml-4 text-sm"
                     placeholder="Search for an artist" [(ngModel)]="searchValue" (input)="search()"
                     (keyup.enter)="search()">
+                <fa-icon (click)="closeSearch()" class="cursor-pointer" [icon]="faCircleXmark"></fa-icon>
             </div>
-            <div *ngIf="artists.length == 0" class="h-max min-w-max flex-grow flex justify-center items-center">
+            <div *ngIf="artists.length == 0" class="h-[147px] w-full flex-grow flex justify-center items-center">
                 <div class="text-secondaryText">No recent searches</div>
             </div>
             <div *ngIf="artists.length > 0"
-                class="max-h-[400px] w-full overflow-y-scroll  pr-2 pl-2 flex-grow flex flex-col border-t-gray-500">
+                class="min-h-[96px] max-h-[400px] w-full overflow-y-scroll flex-shrink pr-2 pl-2 flex flex-col border-t-gray-500">
                 <div *ngFor="let artist of artists"
                     class="flex align-middle rounded-md bg-tertiary p-4 mb-2 first:mt-2">
                     <img class="h-12 w-12 rounded-md" [src]="artist.image" />
@@ -23,10 +25,13 @@
                     </div>
                 </div>
             </div>
-            <div class="text-secondaryText flex justify-end align-middle border-t-gray-500 border-t-[1px] p-3 text-xs">
-                <p (click)="sendToLastFM()" class="m-2">Powered by Audioscrobbler</p>
-                <img (click)="sendToLastFM()" class="w-7 object-contain"
-                    src="https://www.last.fm/static/images/footer_logo@2x.49ca51948b0a.png" alt="">
+            <div
+                class="text-secondaryText select-none flex flex-none h-[57px] justify-end align-middle border-t-gray-500 border-t-[1px] p-3 text-xs">
+                <div class="flex w-fit h-fit cursor-pointer">
+                    <p (click)="sendToLastFM()" class="m-2">Powered by Audioscrobbler</p>
+                    <img (click)="sendToLastFM()" class="w-7 object-contain"
+                        src="https://www.last.fm/static/images/footer_logo@2x.49ca51948b0a.png" alt="">
+                </div>
             </div>
         </div>
     </div>

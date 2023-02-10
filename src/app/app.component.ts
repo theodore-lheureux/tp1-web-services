@@ -11,6 +11,7 @@ import { LastFMService } from './services/last-fm.service';
 export class AppComponent implements OnInit {
   title = 'tp1-web-services';
   keySet = false;
+  searchbarVisible = true;
   artist: Artist | undefined;
   artistControl = new FormControl('', [Validators.required]);
   apiKeyControl = new FormControl('', [
@@ -61,6 +62,19 @@ export class AppComponent implements OnInit {
     this.artist = undefined;
     this.artistControl.reset();
     window.localStorage.removeItem('artistName');
+  }
+
+  closeSearch(artist: Artist | undefined): void {
+    this.searchbarVisible = false;
+    if (artist) {
+      this.getArtist(artist.name).catch((error) => {
+        console.log(error);
+      });
+    }
+  }
+
+  openSearch(): void {
+    this.searchbarVisible = true;
   }
 
   async getArtist(artistName: string): Promise<void> {
