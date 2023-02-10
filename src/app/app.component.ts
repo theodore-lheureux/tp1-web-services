@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Artist } from './models/artist.class';
 import { LastFMService } from './services/last-fm.service';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-root',
@@ -9,9 +10,10 @@ import { LastFMService } from './services/last-fm.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  faMagnifyingGlass = faMagnifyingGlass;
   title = 'tp1-web-services';
   keySet = false;
-  searchbarVisible = true;
+  searchbarVisible = false;
   artist: Artist | undefined;
   artistControl = new FormControl('', [Validators.required]);
   apiKeyControl = new FormControl('', [

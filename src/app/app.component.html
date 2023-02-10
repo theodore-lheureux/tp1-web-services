@@ -16,16 +16,19 @@
     </div>
 </div>
 
-<app-searchbar *ngIf="searchbarVisible" [apiKey]="apiKeyControl.value!"
-    (closeEvent)="closeSearch($event)"></app-searchbar>
+<app-searchbar *ngIf="searchbarVisible" [apiKey]="apiKeyControl.value!" (closeEvent)="closeSearch($event)">
+</app-searchbar>
 
 <div *ngIf="keySet">
-    <input (click)="openSearch()" type="text" id="artist" placeholder="Search for Artist"
-        class="m-2 p-2 bg-secondary rounded-md form-control text-secondaryText">
+    <button (click)="openSearch()"
+        class="m-2 h-[48px] w-[200px] bg-secondary rounded-md form-control text-secondaryText">
+        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+        <span class="ml-2">Search for artist</span>
+    </button>
 </div>
 
 <div *ngIf="artist">
-    <button class="m-2 btn bg-secondary text-secondaryText" (click)="resetArtist()">Clear Artist</button>
+    <button class="m-2 btn bg-secondary text-secondaryText" (click)="resetArtist()">Clear</button>
     <div *ngFor="let album of artist.albums" class="m-2 p-2 bg-secondary rounded-md">
         <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
     </div>

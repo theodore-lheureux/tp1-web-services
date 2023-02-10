@@ -7,9 +7,9 @@
                 <label for="text" class="">
                     <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
                 </label>
-                <input type="text" id="text" class="bg-secondary flex-grow focus:outline-none ml-4 text-sm"
-                    placeholder="Search for an artist" [(ngModel)]="searchValue" (input)="search()"
-                    (keyup.enter)="search()">
+                <input type="text" id="text" class="no bg-secondary flex-grow focus:outline-none ml-4 text-sm"
+                    placeholder="Search for an artist" autocomplete="off" [(ngModel)]="searchValue" (input)="search()"
+                    (keyup.enter)="search()" #searchInput>
                 <fa-icon (click)="closeSearch()" class="cursor-pointer" [icon]="faCircleXmark"></fa-icon>
             </div>
             <div *ngIf="artists.length == 0" class="h-[147px] w-full flex-grow flex justify-center items-center">

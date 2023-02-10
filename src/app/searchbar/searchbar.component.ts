@@ -5,6 +5,8 @@ import {
   EventEmitter,
   HostListener,
   AfterViewChecked,
+  ViewChildren,
+  AfterViewInit,
 } from '@angular/core';
 import {
   faCircleXmark,
@@ -18,12 +20,13 @@ import { Artist } from '../models/artist.class';
   templateUrl: './searchbar.component.html',
   styleUrls: ['./searchbar.component.scss'],
 })
-export class SearchbarComponent implements AfterViewChecked {
+export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
   faMagnifyingGlass = faMagnifyingGlass;
   faCircleXmark = faCircleXmark;
   @Input() apiKey: string = '';
   @Output() closeEvent = new EventEmitter<Artist | undefined>();
-  searchValue = 'sup';
+  @ViewChildren('searchInput') searchInputElement: any;
+  searchValue = '';
   selectedIndex = -1;
   artists: Artist[] = [];
 
@@ -31,6 +34,10 @@ export class SearchbarComponent implements AfterViewChecked {
 
   ngAfterViewChecked(): void {
     this.scrollToSelected();
+  }
+
+  ngAfterViewInit(): void {
+    this.searchInputElement.first.nativeElement.focus();
   }
 
   search() {
