@@ -29,7 +29,7 @@
 
 <div *ngIf="artist">
     <button class="m-2 btn bg-secondary text-secondaryText" (click)="resetArtist()">Clear</button>
-    <div *ngFor="let album of artist.albums" class="m-2 p-2 bg-secondary rounded-md">
+    <div *ngFor="let album of artist.albums" class="m-2 p-2 bg-secondary select-none cursor-pointer rounded-md">
         <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
     </div>
 </div>
