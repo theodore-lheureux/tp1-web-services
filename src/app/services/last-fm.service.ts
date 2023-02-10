@@ -28,7 +28,7 @@ export class LastFMService {
     let artists: Artist[] = [];
     let res: any = await lastValueFrom(
       this.httpClient.get(
-        `http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&api_key=${apiKey}&format=json`
+        `http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&limit=10&api_key=${apiKey}&format=json`
       )
     );
 
@@ -38,7 +38,7 @@ export class LastFMService {
           artist.mbid,
           artist.name,
           '',
-          await this.fetchArtistImage(artist.mbid)
+          await this.fetchArtistImage(artist.mbid, apiKey)
         )
       );
     });
@@ -69,7 +69,7 @@ export class LastFMService {
       id,
       res.artist.name,
       res.artist.bio.summary,
-      await this.fetchArtistImage(id)
+      await this.fetchArtistImage(id, apiKey)
     );
     artist.albums = await this.getTopAlbums(apiKey, artist);
 
@@ -126,18 +126,14 @@ export class LastFMService {
     return songs;
   }
 
-  private async fetchArtistImage(artistMID: string): Promise<string> {
+  private async fetchArtistImage(id: string, apiKey: string): Promise<string> {
+    // return the artist's top album image
     let res: any = await lastValueFrom(
       this.httpClient.get(
-        `https://musicbrainz.org/ws/2/artist/${artistMID}?inc=url-rels&fmt=json`
+        `http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${id}&api_key=${apiKey}&limit=1&format=json`
       )
     );
 
-    for (let i = 0; i < res.relations.length; i++) {
-      if (res.relations[i].type === 'image') {
-        return res.relations[i].url.resource;
-      }
-    }
-    return '';
+    return res.topalbums.album[0].image[3]['#text'];
   }
 }

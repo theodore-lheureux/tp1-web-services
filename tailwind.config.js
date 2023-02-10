@@ -6,12 +6,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#0f172a",
-        secondary: "#1e293b",
-        tertiary: "#ffb703",
+        primary: "#212529",
+        secondary: "#343a40",
+        tertiary: "#495057",
         quaternary: "#fb8500",
         primaryText: "#8ecae6",
-        secondaryText: "#94a3b8",
+        secondaryText: "#fdfcdc",
       },
     },
   },

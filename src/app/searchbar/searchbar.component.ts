@@ -11,12 +11,13 @@ import { Artist } from '../models/artist.class';
 export class SearchbarComponent {
   faMagnifyingGlass = faMagnifyingGlass;
   @Input() apiKey: string = '';
-  searchValue = '';
+  searchValue = 'sup';
   artists: Artist[] = [];
 
   constructor(private lastFM: LastFMService) {}
 
   async search() {
+    this.artists = [];
     if (this.searchValue.length > 2) {
       try {
         this.artists = await this.lastFM.searchArtist(
@@ -27,6 +28,10 @@ export class SearchbarComponent {
         console.error(error);
       }
     }
+  }
+
+  sendToLastFM() {
+    window.open(`https://www.last.fm/`, '_blank');
   }
 
   async submit() {}
