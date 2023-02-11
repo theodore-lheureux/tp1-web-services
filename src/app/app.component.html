@@ -1,35 +1,38 @@
-<div *ngIf="!keySet">
-    <input #apiKeyInput class="m-2 p-2 bg-secondary rounded-md form-control" type="text" id="apiKey"
-        placeholder="API Key" [formControl]="apiKeyControl">
-    <button class="m-2 btn bg-secondary text-secondaryText" (click)="setApiKey(apiKeyInput.value)">Set API Key</button>
+<div [ngClass]="searchbarVisible ? 'overflow-hidden h-[100vh]' : ''">
+    <div *ngIf="!keySet">
+        <input #apiKeyInput class="m-2 p-2 bg-secondary rounded-md form-control" type="text" id="apiKey"
+            placeholder="API Key" [formControl]="apiKeyControl">
+        <button class="m-2 btn bg-secondary text-secondaryText" (click)="setApiKey(apiKeyInput.value)">Set API
+            Key</button>
 
-    <div *ngIf="apiKeyControl.invalid && apiKeyControl.dirty" class="m-4 mt-0 text-red-600">
-        <div *ngIf="apiKeyControl.errors?.['required']">
-            API Key is required.
-        </div>
-        <div *ngIf="apiKeyControl.errors?.['minlength']">
-            API Key must be at least 4 characters long.
-        </div>
-        <div *ngIf="apiKeyControl.errors?.['invalidKey']">
-            API Key is invalid.
+        <div *ngIf="apiKeyControl.invalid && apiKeyControl.dirty" class="m-4 mt-0 text-red-600">
+            <div *ngIf="apiKeyControl.errors?.['required']">
+                API Key is required.
+            </div>
+            <div *ngIf="apiKeyControl.errors?.['minlength']">
+                API Key must be at least 4 characters long.
+            </div>
+            <div *ngIf="apiKeyControl.errors?.['invalidKey']">
+                API Key is invalid.
+            </div>
         </div>
     </div>
-</div>
 
-<app-searchbar *ngIf="searchbarVisible" [apiKey]="apiKeyControl.value!" (closeEvent)="closeSearch($event)">
-</app-searchbar>
+    <app-searchbar *ngIf="searchbarVisible" [apiKey]="apiKeyControl.value!" (closeEvent)="closeSearch($event)">
+    </app-searchbar>
 
-<div *ngIf="keySet">
-    <button (click)="openSearch()"
-        class="m-2 h-[48px] w-[200px] bg-secondary rounded-md form-control text-secondaryText">
-        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
-        <span class="ml-2">Search for artist</span>
-    </button>
-</div>
+    <div *ngIf="keySet">
+        <button (click)="openSearch()"
+            class="m-2 h-[48px] w-[200px] bg-secondary rounded-md form-control text-secondaryText">
+            <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+            <span class="ml-2">Search for artist</span>
+        </button>
+    </div>
 
-<div *ngIf="artist">
-    <button class="m-2 btn bg-secondary text-secondaryText" (click)="resetArtist()">Clear</button>
-    <div *ngFor="let album of artist.albums" class="m-2 p-2 bg-secondary select-none cursor-pointer rounded-md">
-        <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
+    <div *ngIf="artist">
+        <button class="m-2 btn bg-secondary text-secondaryText" (click)="resetArtist()">Clear</button>
+        <div *ngFor="let album of artist.albums" class="m-2 p-2 bg-secondary select-none cursor-pointer rounded-md">
+            <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
+        </div>
     </div>
 </div>
