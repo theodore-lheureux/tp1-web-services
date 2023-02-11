@@ -2,7 +2,7 @@
     (click)="bgClick($event)">
     <div class="h-fit w-fit mt-[8vh]">
         <div
-            class="w-[90vw] max-w-[758px] min-h-[205px] max-h-[60vh] flex flex-col shadow-inner shadow-[#ffffff12] bg-secondary rounded-md">
+            class="w-[90vw] max-w-[758px] min-h-[205px] max-h-[60h] flex flex-col shadow-inner shadow-[#ffffff12] bg-secondary rounded-md">
             <div class="text-secondaryText flex-initial flex p-4  border-b-gray-500 border-b-[1px]">
                 <label for="text" class="">
                     <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
@@ -15,19 +15,18 @@
             <div *ngIf="artists.length == 0" class="h-[147px] w-full flex-grow flex justify-center items-center">
                 <div class="text-secondaryText">No recent searches</div>
             </div>
-            <div *ngIf="artists.length > 0 && searchValue.length > 0"
-                class="min-h-[96px] max-h-[400px] pt-2 w-full overflow-y-auto flex-shrink pr-2 pl-2 flex flex-col border-t-gray-500">
+            <div *ngIf="artists.length > 0 && searchValue.length > 2"
+                class="min-h-[96px] max-h-[450px] pt-2 w-full overflow-y-auto flex-shrink pr-2 pl-2 flex flex-col border-t-gray-500">
                 <app-artist *ngFor="let artist of artists" (mouseenter)="selectArtist(artist)"
                     (click)="selectArtist(artist); submit();" [artist]="artist"></app-artist>
             </div>
-            <div *ngIf="artists.length > 0 && searchValue.length == 0">
-                <div
-                    class="min-h-[96px] max-h-[400px] pt-4 w-full overflow-y-auto flex-shrink pr-2 pl-2 flex flex-col border-t-gray-500">
-                    <div class="text-secondaryText text-lg font-medium mb-2 pb-3 pr-2 ">
-                        Recent searches</div>
-                    <app-artist *ngFor="let artist of artists" (mouseenter)="selectArtist(artist)"
-                        (click)="selectArtist(artist); submit();" [artist]="artist"></app-artist>
-                </div>
+            <div *ngIf="artists.length > 0 && searchValue.length <= 2"
+                class="min-h-[96px] max-h-[450px] pt-2 w-full overflow-y-auto flex-shrink pr-2 pl-2 flex flex-col border-t-gray-500">
+                <div class="text-secondaryText text-lg font-medium mb-2 pb-3 pr-2">
+                    Recent searches</div>
+                <app-artist *ngFor="let artist of artists" (mouseenter)="selectArtist(artist)"
+                    (click)="selectArtist(artist); submit();" [artist]="artist" [deletable]="true"
+                    (deleteEvent)="deleteRecent($event)"></app-artist>
             </div>
             <div class=" flex flex-none h-[57px] justify-end align-middle border-t-gray-500 border-t-[1px]">
                 <app-last-fm-watermark></app-last-fm-watermark>

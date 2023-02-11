@@ -64,7 +64,7 @@ export class SearchbarComponent
       this.selectFirstOrNone();
       return;
     }
-    this.artists = [];
+    this.artists = this.recentArtists;
   }
 
   async submit() {
@@ -83,6 +83,17 @@ export class SearchbarComponent
       );
       this.addArtist(this.artists[this.selectedIndex]);
     }
+  }
+
+  deleteRecent(artist: Artist) {
+    this.recentArtists = this.recentArtists.filter(
+      (a) => a.name !== artist.name
+    );
+    window.localStorage.setItem(
+      'recentSearches',
+      JSON.stringify(this.recentArtists)
+    );
+    this.artists = this.recentArtists;
   }
 
   closeSearch() {
