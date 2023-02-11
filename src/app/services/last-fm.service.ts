@@ -73,7 +73,7 @@ export class LastFMService {
     return artist;
   }
 
-  async getTopAlbums(apiKey: string, artist: Artist): Promise<Album[]> {
+  private async getTopAlbums(apiKey: string, artist: Artist): Promise<Album[]> {
     let res: any = await lastValueFrom(
       this.httpClient.get(
         `http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${artist.id}&api_key=${apiKey}&format=json`

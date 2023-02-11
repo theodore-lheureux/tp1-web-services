@@ -7,6 +7,7 @@ import {
   AfterViewChecked,
   ViewChildren,
   AfterViewInit,
+  OnInit,
 } from '@angular/core';
 import {
   faCircleXmark,
@@ -20,7 +21,9 @@ import { Artist } from '../models/artist.class';
   templateUrl: './searchbar.component.html',
   styleUrls: ['./searchbar.component.scss'],
 })
-export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
+export class SearchbarComponent
+  implements AfterViewChecked, AfterViewInit, OnInit
+{
   faMagnifyingGlass = faMagnifyingGlass;
   faCircleXmark = faCircleXmark;
   @Input() apiKey: string = '';
@@ -28,12 +31,19 @@ export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
   @ViewChildren('searchInput') searchInputElement: any;
   searchValue = '';
   selectedIndex = -1;
-  artists: Artist[] = [];
+  recentArtists: Artist[] = JSON.parse(
+    window.localStorage.getItem('recentSearches') || '[]'
+  );
+  artists: Artist[] = this.recentArtists;
 
   constructor(private lastFM: LastFMService) {}
 
   ngAfterViewChecked(): void {
     this.scrollToSelected();
+  }
+
+  ngOnInit(): void {
+    this.selectFirstOrNone();
   }
 
   ngAfterViewInit(): void {
@@ -57,14 +67,20 @@ export class SearchbarComponent implements AfterViewChecked, AfterViewInit {
     this.artists = [];
   }
 
-  sendToLastFM() {
-    window.open(`https://www.last.fm/`, '_blank');
-  }
-
   async submit() {
     if (this.selectedIndex === -1) {
       this.addArtist(undefined);
     } else {
+      this.recentArtists = this.recentArtists.filter(
+        (artist) => artist.name !== this.artists[this.selectedIndex].name
+      );
+
+      this.recentArtists.unshift(this.artists[this.selectedIndex]);
+      this.recentArtists = this.recentArtists.slice(0, 10);
+      window.localStorage.setItem(
+        'recentSearches',
+        JSON.stringify(this.recentArtists)
+      );
       this.addArtist(this.artists[this.selectedIndex]);
     }
   }
