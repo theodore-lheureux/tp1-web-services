@@ -7,9 +7,10 @@ import { AlbumComponent } from './album/album.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchbarComponent } from './searchbar/searchbar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ArtistComponent } from './artist/artist.component';
 
 @NgModule({
-  declarations: [AppComponent, AlbumComponent, SearchbarComponent],
+  declarations: [AppComponent, AlbumComponent, SearchbarComponent, ArtistComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
