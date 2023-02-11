@@ -21,7 +21,7 @@
                     (click)="selectArtist(artist); submit();" [artist]="artist"></app-artist>
             </div>
             <div *ngIf="artists.length > 0 && searchValue.length <= 2"
-                class="min-h-[96px] max-h-[450px] pt-2 w-full overflow-y-auto flex-shrink pr-2 pl-2 flex flex-col border-t-gray-500">
+                class="min-h-[96px] max-h-[450px] pt-4 w-full overflow-y-auto flex-shrink pr-2 pl-2 flex flex-col border-t-gray-500">
                 <div class="text-secondaryText text-lg font-medium mb-2 pb-3 pr-2">
                     Recent searches</div>
                 <app-artist *ngFor="let artist of artists" (mouseenter)="selectArtist(artist)"
