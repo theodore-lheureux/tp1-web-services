@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
   faMagnifyingGlass = faMagnifyingGlass;
   title = 'tp1-web-services';
   keySet = false;
-  searchbarVisible = false;
+  searchbarVisible = true;
   artist: Artist | undefined;
   artistControl = new FormControl('', [Validators.required]);
   apiKeyControl = new FormControl('', [

@@ -20,13 +20,8 @@
                 <app-artist *ngFor="let artist of artists" (mouseenter)="selectArtist(artist)"
                     (click)="selectArtist(artist); submit();" [artist]="artist"></app-artist>
             </div>
-            <div
-                class="text-secondaryText select-none flex flex-none h-[57px] justify-end align-middle border-t-gray-500 border-t-[1px] p-3 text-xs">
-                <div class="flex w-fit h-fit cursor-pointer">
-                    <p (click)="sendToLastFM()" class="m-2">Powered by Audioscrobbler</p>
-                    <img (click)="sendToLastFM()" class="w-7 object-contain"
-                        src="https://www.last.fm/static/images/footer_logo@2x.49ca51948b0a.png" alt="">
-                </div>
+            <div class=" flex flex-none h-[57px] justify-end align-middle border-t-gray-500 border-t-[1px]">
+                <app-last-fm-watermark></app-last-fm-watermark>
             </div>
         </div>
     </div>
