@@ -15,7 +15,7 @@ export class LastFMService {
     try {
       await lastValueFrom(
         this.httpClient.get(
-          `http://ws.audioscrobbler.com/2.0/?method=album.search&album=believe&api_key=${apiKey}&format=json`
+          `https://ws.audioscrobbler.com/2.0/?method=album.search&album=believe&api_key=${apiKey}&format=json`
         )
       );
     } catch (error) {
@@ -28,7 +28,7 @@ export class LastFMService {
     let artists: Artist[] = [];
     let res: any = await lastValueFrom(
       this.httpClient.get(
-        `http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&limit=10&api_key=${apiKey}&format=json`
+        `https://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&limit=10&api_key=${apiKey}&format=json`
       )
     );
 
@@ -46,7 +46,7 @@ export class LastFMService {
     let artist: Artist;
     let reqId: any = await lastValueFrom(
       this.httpClient.get(
-        `http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&api_key=${apiKey}&format=json`
+        `https://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&api_key=${apiKey}&format=json`
       )
     );
 
@@ -57,7 +57,7 @@ export class LastFMService {
     let id = reqId.results.artistmatches.artist[0].mbid;
     let res: any = await lastValueFrom(
       this.httpClient.get(
-        `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=${id}&api_key=${apiKey}&format=json`
+        `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=${id}&api_key=${apiKey}&format=json`
       )
     );
 
@@ -76,7 +76,7 @@ export class LastFMService {
   private async getTopAlbums(apiKey: string, artist: Artist): Promise<Album[]> {
     let res: any = await lastValueFrom(
       this.httpClient.get(
-        `http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${artist.id}&api_key=${apiKey}&format=json`
+        `https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${artist.id}&api_key=${apiKey}&format=json`
       )
     );
 
@@ -112,7 +112,7 @@ export class LastFMService {
   async getAlbumSongs(apiKey: string, album: Album): Promise<Song[]> {
     let res: any = await lastValueFrom(
       this.httpClient.get(
-        `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${apiKey}&artist=${album.artist.name}&album=${album.title}&format=json`
+        `https://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${apiKey}&artist=${album.artist.name}&album=${album.title}&format=json`
       )
     );
 
@@ -134,7 +134,7 @@ export class LastFMService {
   private async fetchArtistImage(id: string, apiKey: string): Promise<string> {
     let res: any = await lastValueFrom(
       this.httpClient.get(
-        `http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${id}&api_key=${apiKey}&limit=1&format=json`
+        `https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${id}&api_key=${apiKey}&limit=1&format=json`
       )
     );
 
