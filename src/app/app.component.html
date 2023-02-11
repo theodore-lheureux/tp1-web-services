@@ -1,8 +1,9 @@
 <div [ngClass]="searchbarVisible ? 'overflow-hidden h-[100vh]' : ''">
     <div *ngIf="!keySet">
-        <input #apiKeyInput class="m-2 p-2 bg-secondary rounded-md form-control" type="text" id="apiKey"
-            placeholder="API Key" [formControl]="apiKeyControl">
-        <button class="m-2 btn bg-secondary text-secondaryText" (click)="setApiKey(apiKeyInput.value)">Set API
+        <input #apiKeyInput class="m-2 p-2 bg-secondary hover:bg-slate-500 rounded-md form-control" type="text"
+            id="apiKey" placeholder="API Key" [formControl]="apiKeyControl">
+        <button class="m-2 btn bg-secondary hover:bg-slate-500 text-secondaryText"
+            (click)="setApiKey(apiKeyInput.value)">Set API
             Key</button>
 
         <div *ngIf="apiKeyControl.invalid && apiKeyControl.dirty" class="m-4 mt-0 text-red-600">
@@ -23,15 +24,18 @@
 
     <div *ngIf="keySet">
         <button (click)="openSearch()"
-            class="m-2 h-[48px] w-[200px] bg-secondary rounded-md form-control text-secondaryText">
+            class="m-2 h-[48px] w-[200px] bg-secondary hover:bg-slate-500 rounded-md form-control text-secondaryText">
             <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
-            <span class="ml-2">Search for artist</span>
+            <span class="ml-2 mr-2">Search for artist</span>
         </button>
+        <button *ngIf="artist"
+            class="m-2 ml-0 h-[48px] w-20 rounded-md bg-secondary text-secondaryText hover:bg-slate-500"
+            (click)="resetArtist()">Clear</button>
     </div>
 
     <div *ngIf="artist">
-        <button class="m-2 btn bg-secondary text-secondaryText" (click)="resetArtist()">Clear</button>
-        <div *ngFor="let album of artist.albums" class="m-2 p-2 bg-secondary select-none cursor-pointer rounded-md">
+        <div *ngFor="let album of artist.albums"
+            class="m-2 p-2 bg-secondary select-none hover:bg-slate-500 cursor-pointer rounded-md">
             <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
         </div>
     </div>
