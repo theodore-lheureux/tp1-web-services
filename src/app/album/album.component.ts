@@ -19,7 +19,7 @@ export class AlbumComponent {
   }
 
   toggleSongs(): void {
-    if (this.album.songs) {
+    if (this.album.songs || this.album.noSongs) {
       this.album.displaySongs = !this.album.displaySongs;
     } else {
       this.getAlbumSongs(this.album).then(() => {

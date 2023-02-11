@@ -116,6 +116,14 @@ export class LastFMService {
       )
     );
 
+    if (
+      res.album?.tracks?.track === undefined ||
+      !(Symbol.iterator in Object(res.album?.tracks?.track))
+    ) {
+      album.noSongs = true;
+      return [];
+    }
+
     let songs = res.album.tracks.track.map((song: any) => {
       return new Song(song.name, song.duration);
     });

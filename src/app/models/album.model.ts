@@ -4,6 +4,7 @@ import { Song } from './song.class';
 export class Album {
   songs: Song[] | undefined;
   displaySongs: boolean = false;
+  noSongs: boolean = false;
 
   constructor(
     public title: string,
