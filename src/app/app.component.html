@@ -38,5 +38,8 @@
             class="m-2 p-2 bg-secondary select-none hover:bg-slate-500 cursor-pointer rounded-md">
             <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
         </div>
+        <div *ngIf="artist.albums.length == 0" class="m-2 p-2 bg-secondary rounded-md">
+            <p class="text-secondaryText">No albums found.</p>
+        </div>
     </div>
 </div>

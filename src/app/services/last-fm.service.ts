@@ -138,7 +138,11 @@ export class LastFMService {
       )
     );
 
-    return res.topalbums.album[0].image[3]['#text'];
+    let image = res.topalbums.album[0].image[3]['#text'];
+
+    if (image === '') image = 'assets/images/album-placeholder.png';
+
+    return image;
   }
 
   private async fetchArtistImages(
