@@ -1,5 +1,5 @@
-<div [ngClass]="artist.selected ? 'bg-slate-500 selectedArtist' : 'bg-tertiary'"
-    class="flex align-middle p-4 mb-2 rounded-md select-none cursor-pointer h-full w-full">
+<div [ngClass]="artist.selected ? 'bg-slate-500 selectedArtist scale-[101%]' : 'bg-tertiary'"
+    class="flex align-middle p-4 mb-2 rounded-md select-none cursor-pointer h-full w-full transition-transform">
     <img class="h-12 flex-none w-12 rounded-md" [src]="artist.image" />
     <div class="flex-none flex flex-col justify-center ml-4">
         <div class="text-secondaryText text-lg">{{artist.name}}</div>

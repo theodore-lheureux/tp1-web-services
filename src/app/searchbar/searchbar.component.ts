@@ -30,6 +30,7 @@ export class SearchbarComponent
   @Output() closeEvent = new EventEmitter<Artist | undefined>();
   @ViewChildren('searchInput') searchInputElement: any;
   searchValue = '';
+  loading = false;
   selectedIndex = -1;
   recentArtists: Artist[] = JSON.parse(
     window.localStorage.getItem('recentSearches') || '[]'
@@ -52,6 +53,8 @@ export class SearchbarComponent
 
   async search() {
     if (this.searchValue.length > 2) {
+      this.loading = true;
+
       this.artists = await this.lastFM.searchArtist(
         this.apiKey,
         this.searchValue
@@ -60,6 +63,8 @@ export class SearchbarComponent
       this.artists = this.artists.sort((a, b) => {
         return b.listeners - a.listeners;
       });
+
+      this.loading = false;
 
       this.selectFirstOrNone();
       return;

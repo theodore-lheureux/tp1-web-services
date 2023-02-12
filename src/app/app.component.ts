@@ -27,11 +27,13 @@ export class AppComponent implements OnInit {
     let localKey = window.localStorage.getItem('apiKey');
     let localArtistName = window.localStorage.getItem('artistName');
     if (localKey) {
+      this.keySet = true;
       this.lastFM.validateApiKey(localKey).then((valid) => {
         if (valid) {
           this.keySet = true;
           this.apiKeyControl.setValue(localKey);
         } else {
+          this.keySet = false;
           window.localStorage.removeItem('apiKey');
         }
         if (localArtistName && this.keySet) {

@@ -34,8 +34,7 @@
     </div>
 
     <div *ngIf="artist">
-        <div *ngFor="let album of artist.albums"
-            class="m-2 p-2 bg-secondary select-none hover:bg-slate-500 cursor-pointer rounded-md">
+        <div *ngFor="let album of artist.albums">
             <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
         </div>
         <div *ngIf="artist.albums.length == 0" class="m-2 p-2 bg-secondary rounded-md">
