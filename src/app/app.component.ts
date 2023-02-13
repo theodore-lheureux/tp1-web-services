@@ -40,6 +40,9 @@ export class AppComponent implements OnInit {
           this.getArtist(localArtistName).catch((error) => {
             console.log(error);
           });
+          return;
+        } else {
+          this.searchbarVisible = true;
         }
       });
     }

@@ -34,11 +34,15 @@
     </div>
 
     <div *ngIf="artist">
-        <div *ngFor="let album of artist.albums">
-            <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
-        </div>
-        <div *ngIf="artist.albums.length == 0" class="m-2 p-2 bg-secondary rounded-md">
-            <p class="text-secondaryText">No albums found.</p>
+        <div class="m-2 p-2 bg-secondary rounded-md">
+            <p class="m-2 p-2 text-secondaryText text-3xl">
+                {{artist.name}}
+            </p>
+            <div *ngFor="let album of artist.albums">
+                <app-album [album]="album" [apiKey]="apiKeyControl.value!"></app-album>
+            </div>
+            <div *ngIf="artist.albums.length == 0" class="m-2 p-2 bg-secondary rounded-md">
+                <p class="text-secondaryText">No albums found.</p>
+            </div>
         </div>
     </div>
-</div>
