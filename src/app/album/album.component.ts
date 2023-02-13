@@ -10,7 +10,7 @@ import { LastFMService } from '../services/last-fm.service';
 })
 export class AlbumComponent {
   @Input() album: Album = new Album('', '', new Artist('', '', '', '', 1));
-  @Input() apiKey: string = '';
+  @Input() apiKey = '';
 
   constructor(private lastFM: LastFMService) {}
 

@@ -3,8 +3,8 @@ import { Song } from './song.class';
 
 export class Album {
   songs: Song[] | undefined;
-  displaySongs: boolean = false;
-  noSongs: boolean = false;
+  displaySongs = false;
+  noSongs = false;
 
   constructor(
     public title: string,

@@ -5,8 +5,6 @@ import { Injectable } from '@angular/core';
 export class CacheResolverService {
   private cache = new Map<string, [Date | null, HttpResponse<any>]>();
 
-  constructor() {}
-
   set(key: string, value: HttpResponse<any>, ttl: number | null = null) {
     if (ttl) {
       const expiresIn = new Date();

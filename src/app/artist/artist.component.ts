@@ -10,7 +10,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 export class ArtistComponent {
   faXmark = faXmark;
   @Input() artist: Artist = new Artist('', '', '', '', 1);
-  @Input() deletable: boolean = false;
+  @Input() deletable = false;
   @Output() deleteEvent = new EventEmitter<Artist>();
 
   deleteArtist(): void {

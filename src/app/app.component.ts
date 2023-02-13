@@ -15,7 +15,6 @@ export class AppComponent implements OnInit {
   keySet = false;
   searchbarVisible = false;
   artist: Artist | undefined;
-  artistControl = new FormControl('', [Validators.required]);
   apiKeyControl = new FormControl('', [
     Validators.required,
     Validators.minLength(4),
@@ -23,51 +22,50 @@ export class AppComponent implements OnInit {
 
   constructor(private lastFM: LastFMService) {}
 
-  ngOnInit(): void {
-    let localKey = window.localStorage.getItem('apiKey');
-    let localArtistName = window.localStorage.getItem('artistName');
-    if (localKey) {
-      this.keySet = true;
-      this.lastFM.validateApiKey(localKey).then((valid) => {
-        if (valid) {
-          this.keySet = true;
-          this.apiKeyControl.setValue(localKey);
-        } else {
-          this.keySet = false;
-          window.localStorage.removeItem('apiKey');
-        }
-        if (localArtistName && this.keySet) {
-          this.getArtist(localArtistName).catch((error) => {
-            console.log(error);
-          });
-          return;
-        } else {
-          this.searchbarVisible = true;
-        }
-      });
+  async ngOnInit(): Promise<void> {
+    const localKey = window.localStorage.getItem('apiKey');
+    const localArtistName = window.localStorage.getItem('artistName');
+
+    if (!localKey) return;
+
+    this.keySet = true;
+
+    if (!(await this.lastFM.validateApiKey(localKey))) {
+      this.keySet = false;
+      window.localStorage.removeItem('apiKey');
+      return;
     }
+    this.apiKeyControl.setValue(localKey);
+
+    if (!localArtistName) {
+      this.searchbarVisible = true;
+      return;
+    }
+
+    this.getArtist(localArtistName).catch((error) => {
+      console.log(error);
+    });
   }
 
   setApiKey(key: string): void {
     this.apiKeyControl.markAsDirty();
     this.apiKeyControl.setValue(key);
 
-    if (this.apiKeyControl.valid) {
-      this.apiKeyIsValid().then((valid) => {
-        if (valid) {
-          this.apiKeyControl.setErrors(null);
-          this.keySet = true;
-          window.localStorage.setItem('apiKey', this.apiKeyControl.value!);
-        } else {
-          this.apiKeyControl.setErrors({ invalidKey: true });
-        }
-      });
-    }
+    if (!this.apiKeyControl.valid) return;
+
+    this.apiKeyIsValid().then((valid) => {
+      if (!valid) {
+        this.apiKeyControl.setErrors({ invalidKey: true });
+        return;
+      }
+      this.apiKeyControl.setErrors(null);
+      this.keySet = true;
+      window.localStorage.setItem('apiKey', this.apiKeyControl.value!);
+    });
   }
 
   resetArtist(): void {
     this.artist = undefined;
-    this.artistControl.reset();
     window.localStorage.removeItem('artistName');
   }
 
@@ -85,21 +83,12 @@ export class AppComponent implements OnInit {
   }
 
   async getArtist(artistName: string): Promise<void> {
-    this.artistControl.markAsDirty();
-    this.artistControl.setValue(artistName);
-
-    if (this.artistControl.valid) {
-      this.artist = await this.lastFM
-        .getArtistInfo(this.apiKeyControl.value!, this.artistControl.value!)
-        .then((artist) => {
-          window.localStorage.setItem('artistName', this.artistControl.value!);
-          return artist;
-        })
-        .catch((error) => {
-          this.artistControl.setErrors({ invalidArtist: true });
-          return undefined;
-        });
-    }
+    this.artist = await this.lastFM
+      .getArtistInfo(this.apiKeyControl.value!, artistName)
+      .then((artist) => {
+        window.localStorage.setItem('artistName', artistName);
+        return artist;
+      });
   }
 
   private async apiKeyIsValid(): Promise<boolean> {

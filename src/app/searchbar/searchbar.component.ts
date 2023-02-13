@@ -26,7 +26,7 @@ export class SearchbarComponent
 {
   faMagnifyingGlass = faMagnifyingGlass;
   faCircleXmark = faCircleXmark;
-  @Input() apiKey: string = '';
+  @Input() apiKey = '';
   @Output() closeEvent = new EventEmitter<Artist | undefined>();
   @ViewChildren('searchInput') searchInputElement: any;
   searchValue = '';
@@ -116,7 +116,7 @@ export class SearchbarComponent
   }
 
   scrollToSelected() {
-    let selected = document.querySelector('.selectedArtist');
+    const selected = document.querySelector('.selectedArtist');
     if (selected) {
       selected.scrollIntoView({
         behavior: 'smooth',
