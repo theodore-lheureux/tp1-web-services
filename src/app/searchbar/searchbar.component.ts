@@ -52,42 +52,45 @@ export class SearchbarComponent
   }
 
   async search() {
-    if (this.searchValue.length > 2) {
-      this.loading = true;
-
-      this.artists = await this.lastFM.searchArtist(
-        this.apiKey,
-        this.searchValue
-      );
-
-      this.artists = this.artists.sort((a, b) => {
-        return b.listeners - a.listeners;
-      });
-
-      this.loading = false;
-
-      this.selectFirstOrNone();
+    if (this.searchValue.length <= 2) {
+      this.artists = this.recentArtists;
       return;
     }
-    this.artists = this.recentArtists;
+
+    this.loading = true;
+
+    this.artists = await this.lastFM.searchArtist(
+      this.apiKey,
+      this.searchValue
+    );
+
+    this.artists = this.artists.sort((a, b) => {
+      return b.listeners - a.listeners;
+    });
+
+    this.loading = false;
+
+    this.selectFirstOrNone();
   }
 
   async submit() {
     if (this.selectedIndex === -1) {
       this.addArtist(undefined);
-    } else {
-      this.recentArtists = this.recentArtists.filter(
-        (artist) => artist.name !== this.artists[this.selectedIndex].name
-      );
-
-      this.recentArtists.unshift(this.artists[this.selectedIndex]);
-      this.recentArtists = this.recentArtists.slice(0, 10);
-      window.localStorage.setItem(
-        'recentSearches',
-        JSON.stringify(this.recentArtists)
-      );
-      this.addArtist(this.artists[this.selectedIndex]);
+      return;
     }
+
+    this.recentArtists = this.recentArtists.filter(
+      (artist) => artist.name !== this.artists[this.selectedIndex].name
+    );
+    this.recentArtists.unshift(this.artists[this.selectedIndex]);
+    this.recentArtists = this.recentArtists.slice(0, 10);
+
+    window.localStorage.setItem(
+      'recentSearches',
+      JSON.stringify(this.recentArtists)
+    );
+
+    this.addArtist(this.artists[this.selectedIndex]);
   }
 
   deleteRecent(artist: Artist) {
@@ -106,9 +109,7 @@ export class SearchbarComponent
   }
 
   bgClick(event: MouseEvent) {
-    if (event.target === event.currentTarget) {
-      this.closeSearch();
-    }
+    if (event.target === event.currentTarget) this.closeSearch();
   }
 
   addArtist(artist: Artist | undefined) {
@@ -117,13 +118,12 @@ export class SearchbarComponent
 
   scrollToSelected() {
     const selected = document.querySelector('.selectedArtist');
-    if (selected) {
+    if (selected)
       selected.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
         inline: 'nearest',
       });
-    }
   }
 
   selectIndex(index: number) {
@@ -138,36 +138,28 @@ export class SearchbarComponent
   }
 
   selectFirstOrNone() {
-    if (this.artists.length > 0) {
-      this.selectIndex(0);
-    } else {
-      this.selectedIndex = -1;
-    }
+    if (this.artists.length > 0) this.selectIndex(0);
+    else this.selectedIndex = -1;
   }
 
   selectLastOrNone() {
-    if (this.artists.length > 0) {
-      this.selectIndex(this.artists.length - 1);
-    } else {
-      this.selectedIndex = -1;
-    }
+    if (this.artists.length > 0) this.selectIndex(this.artists.length - 1);
+    else this.selectedIndex = -1;
   }
 
   selectPrevious() {
-    if (this.selectedIndex > 0) {
+    if (this.selectedIndex <= 0) this.selectLastOrNone();
+    else {
       this.selectedIndex--;
       this.selectIndex(this.selectedIndex);
-    } else {
-      this.selectLastOrNone();
     }
   }
 
   selectNext() {
-    if (this.selectedIndex < this.artists.length - 1) {
+    if (this.selectedIndex >= this.artists.length - 1) this.selectFirstOrNone();
+    else {
       this.selectedIndex++;
       this.selectIndex(this.selectedIndex);
-    } else {
-      this.selectFirstOrNone();
     }
   }
 

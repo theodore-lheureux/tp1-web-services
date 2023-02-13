@@ -152,10 +152,12 @@ export class LastFMService {
 
     for (const artist of artists) {
       promises.push(
-        new Promise<Artist>(async (resolve, reject) => {
+        new Promise<Artist>((resolve, reject) => {
           try {
-            artist.image = await this.fetchArtistImage(artist.id, apiKey);
-            resolve(artist);
+            this.fetchArtistImage(artist.id, apiKey).then((image) => {
+              artist.image = image;
+              resolve(artist);
+            });
           } catch (error) {
             reject(error);
           }

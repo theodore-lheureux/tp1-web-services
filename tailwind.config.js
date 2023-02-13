@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
-import { plugin } from "tailwindcss/plugin";
+const plugin = require("tailwindcss/plugin");
 
 module.exports = {
   content: ["./src/**/*.{html,ts}"],

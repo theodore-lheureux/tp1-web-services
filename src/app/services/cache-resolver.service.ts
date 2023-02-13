@@ -6,13 +6,13 @@ export class CacheResolverService {
   private cache = new Map<string, [Date | null, HttpResponse<any>]>();
 
   set(key: string, value: HttpResponse<any>, ttl: number | null = null) {
-    if (ttl) {
-      const expiresIn = new Date();
-      expiresIn.setSeconds(expiresIn.getSeconds() + ttl);
-      this.cache.set(key, [expiresIn, value]);
-    } else {
+    if (!ttl) {
       this.cache.set(key, [null, value]);
+      return;
     }
+    const expiresIn = new Date();
+    expiresIn.setSeconds(expiresIn.getSeconds() + ttl);
+    this.cache.set(key, [expiresIn, value]);
   }
 
   get(key: string) {
