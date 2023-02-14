@@ -16,9 +16,9 @@ export class CacheInterceptor implements HttpInterceptor {
   constructor(private cacheResolver: CacheResolverService) {}
 
   intercept(
-    req: HttpRequest<any>,
+    req: HttpRequest<unknown>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<unknown>> {
     if (req.method !== 'GET' || req.urlWithParams.includes('believe')) {
       console.log('CacheInterceptor skipped: ', req.urlWithParams);
       return next.handle(req);
@@ -33,9 +33,9 @@ export class CacheInterceptor implements HttpInterceptor {
   }
 
   sendRequest(
-    req: HttpRequest<any>,
+    req: HttpRequest<unknown>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(
       tap((event) => {
         if (event instanceof HttpResponse) {

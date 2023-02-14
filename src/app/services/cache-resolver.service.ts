@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class CacheResolverService {
-  private cache = new Map<string, [Date | null, HttpResponse<any>]>();
+  private cache = new Map<string, [Date | null, HttpResponse<unknown>]>();
 
-  set(key: string, value: HttpResponse<any>, ttl: number | null = null) {
+  set(key: string, value: HttpResponse<unknown>, ttl: number | null = null) {
     if (!ttl) {
       this.cache.set(key, [null, value]);
       return;

@@ -60,7 +60,7 @@ export class AppComponent implements OnInit {
       }
       this.apiKeyControl.setErrors(null);
       this.keySet = true;
-      window.localStorage.setItem('apiKey', this.apiKeyControl.value!);
+      window.localStorage.setItem('apiKey', this.apiKeyControl.value ?? '');
     });
   }
 
@@ -84,7 +84,7 @@ export class AppComponent implements OnInit {
 
   async getArtist(artistName: string): Promise<void> {
     this.artist = await this.lastFM
-      .getArtistInfo(this.apiKeyControl.value!, artistName)
+      .getArtistInfo(this.apiKeyControl.value ?? '', artistName)
       .then((artist) => {
         window.localStorage.setItem('artistName', artistName);
         return artist;
@@ -92,6 +92,6 @@ export class AppComponent implements OnInit {
   }
 
   private async apiKeyIsValid(): Promise<boolean> {
-    return await this.lastFM.validateApiKey(this.apiKeyControl.value!);
+    return await this.lastFM.validateApiKey(this.apiKeyControl.value ?? '');
   }
 }

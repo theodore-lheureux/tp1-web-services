@@ -1,6 +1,6 @@
 <div (click)="toggleSongs()" class="bg-secondary select-none hover:bg-slate-500 cursor-pointer rounded-md m-2 p-2">
     <div>
-        <img [src]="album.image" width="100px" class="m-2 rounded-md inline">
+        <img [src]="album.image" width="100px" class="m-2 rounded-md inline" loading="lazy">
         <p class="m-2 inline text-secondaryText text-3xl">
             {{album.title}}
         </p>

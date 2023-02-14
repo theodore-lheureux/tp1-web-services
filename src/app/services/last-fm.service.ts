@@ -14,7 +14,7 @@ export class LastFMService {
   async validateApiKey(apiKey: string): Promise<boolean> {
     try {
       await lastValueFrom(
-        this.httpClient.get(
+        this.httpClient.get<ArtistResponse>(
           `https://ws.audioscrobbler.com/2.0/?method=album.search&album=believe&api_key=${apiKey}&format=json`
         )
       );
@@ -26,13 +26,13 @@ export class LastFMService {
 
   async searchArtist(apiKey: string, artistName: string): Promise<Artist[]> {
     const artists: Artist[] = [];
-    const res: any = await lastValueFrom(
-      this.httpClient.get(
+    const res: ArtistResponse = await lastValueFrom(
+      this.httpClient.get<ArtistResponse>(
         `https://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&limit=10&api_key=${apiKey}&format=json`
       )
     );
 
-    res.results.artistmatches.artist.forEach((artist: any) => {
+    res.results.artistmatches.artist.forEach((artist) => {
       if (artist.mbid === '') return;
       artists.push(
         new Artist(artist.mbid, artist.name, '', '', artist.listeners)
@@ -43,8 +43,8 @@ export class LastFMService {
   }
 
   async getArtistInfo(apiKey: string, artistName: string): Promise<Artist> {
-    const reqId: any = await lastValueFrom(
-      this.httpClient.get(
+    const reqId: ArtistResponse = await lastValueFrom(
+      this.httpClient.get<ArtistResponse>(
         `https://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&api_key=${apiKey}&format=json`
       )
     );
@@ -54,8 +54,8 @@ export class LastFMService {
     }
 
     const id = reqId.results.artistmatches.artist[0].mbid;
-    const res: any = await lastValueFrom(
-      this.httpClient.get(
+    const res: ArtistGetInfoResponse = await lastValueFrom(
+      this.httpClient.get<ArtistGetInfoResponse>(
         `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=${id}&api_key=${apiKey}&format=json`
       )
     );
@@ -65,7 +65,7 @@ export class LastFMService {
       res.artist.name,
       res.artist.bio.summary,
       await this.fetchArtistImage(id, apiKey),
-      res.artist.listeners
+      res.artist.stats.listeners
     );
     artist.albums = await this.getTopAlbums(apiKey, artist);
 
@@ -73,21 +73,21 @@ export class LastFMService {
   }
 
   async getAlbumSongs(apiKey: string, album: Album): Promise<Song[]> {
-    const res: any = await lastValueFrom(
-      this.httpClient.get(
+    const res: AlbumGetInfoResponse = await lastValueFrom(
+      this.httpClient.get<AlbumGetInfoResponse>(
         `https://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${apiKey}&artist=${album.artist.name}&album=${album.title}&format=json`
       )
     );
 
     if (
-      res.album?.tracks?.track === undefined ||
+      res.album.tracks?.track === undefined ||
       !(Symbol.iterator in Object(res.album?.tracks?.track))
     ) {
       album.noSongs = true;
       return [];
     }
 
-    const songs = res.album.tracks.track.map((song: any) => {
+    const songs = res.album.tracks.track.map((song) => {
       return new Song(song.name, song.duration);
     });
 
@@ -131,8 +131,8 @@ export class LastFMService {
   }
 
   private async fetchArtistImage(id: string, apiKey: string): Promise<string> {
-    const res: any = await lastValueFrom(
-      this.httpClient.get(
+    const res: TopAlbumsResponse = await lastValueFrom(
+      this.httpClient.get<TopAlbumsResponse>(
         `https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${id}&api_key=${apiKey}&limit=1&format=json`
       )
     );
@@ -192,7 +192,7 @@ interface TopAlbumsResponse {
     album: {
       mbid: string;
       name: string;
-      playcount: string;
+      playcount: number;
       artist: {
         mbid: string;
         name: string;
@@ -204,5 +204,110 @@ interface TopAlbumsResponse {
       }[];
       url: string;
     }[];
+  };
+}
+
+interface ArtistResponse {
+  results: {
+    artistmatches: {
+      artist: {
+        mbid: string;
+        name: string;
+        listeners: number;
+      }[];
+    };
+  };
+}
+
+interface ArtistGetInfoResponse {
+  artist: {
+    name: string;
+    mbid: string;
+    url: string;
+    image: {
+      '#text': string;
+      size: string;
+    }[];
+    streamable: string;
+    ontour: string;
+    stats: {
+      listeners: number;
+      playcount: number;
+    };
+    similar: {
+      artist: {
+        name: string;
+        url: string;
+        image: {
+          '#text': string;
+          size: string;
+        }[];
+      }[];
+    };
+    tags: {
+      tag: {
+        name: string;
+        url: string;
+      }[];
+    };
+    bio: {
+      links: {
+        link: {
+          '#text': string;
+          rel: string;
+          href: string;
+        };
+      };
+      published: string;
+      summary: string;
+      content: string;
+    };
+  };
+}
+
+interface AlbumGetInfoResponse {
+  album: {
+    name: string;
+    artist: string;
+    mbid: string;
+    url: string;
+    image: {
+      '#text': string;
+      size: string;
+    }[];
+    listeners: number;
+    playcount: number;
+    tracks: {
+      track:
+        | {
+            name: string;
+            duration: number;
+            url: string;
+            streamable: {
+              '#text': string;
+              fulltrack: string;
+            };
+            artist: {
+              name: string;
+              mbid: string;
+              url: string;
+            };
+            '@attr': {
+              rank: string;
+            };
+          }[]
+        | undefined;
+    };
+    tags: {
+      tag: {
+        name: string;
+        url: string;
+      }[];
+    };
+    wiki: {
+      published: string;
+      summary: string;
+      content: string;
+    };
   };
 }
