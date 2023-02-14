@@ -95,15 +95,15 @@ export class LastFMService {
   }
 
   private async getTopAlbums(apiKey: string, artist: Artist): Promise<Album[]> {
-    const res: any = await lastValueFrom(
-      this.httpClient.get(
+    const res: TopAlbumsResponse = await lastValueFrom(
+      this.httpClient.get<TopAlbumsResponse>(
         `https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=${artist.id}&api_key=${apiKey}&format=json`
       )
     );
 
     const albums: Album[] = [];
 
-    res.topalbums.album.forEach((album: any) => {
+    res.topalbums.album.forEach((album) => {
       if (
         !(
           album.image[3]['#text'] === '' ||
@@ -167,4 +167,42 @@ export class LastFMService {
 
     return await Promise.all(promises);
   }
+
+  // private parseAlbums(albums: any): Album[] {
+  //   const blackList = [
+  //     'remaster',
+  //     'live',
+  //     'deluxe',
+  //     'edition',
+  //     'bonus',
+  //     'disc',
+  //     'version',
+  //     'single',
+  //     'very best of',
+  //     'best of',
+  //     'anthology',
+  //   ];
+
+  //   return [];
+  // }
+}
+
+interface TopAlbumsResponse {
+  topalbums: {
+    album: {
+      mbid: string;
+      name: string;
+      playcount: string;
+      artist: {
+        mbid: string;
+        name: string;
+        url: string;
+      };
+      image: {
+        '#text': string;
+        size: string;
+      }[];
+      url: string;
+    }[];
+  };
 }
